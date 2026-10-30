@@ -1,0 +1,10 @@
+{ "plugins": [
+    {
+        "repo": "Syncxv/vc-message-logger-enhanced",
+        "displayName": "Message Logger Enhanced",
+        "description": "Improvements for message logger including persistence and better capture",
+        "platforms": ["windows", "linux", "macos"],
+        "vesktopOnly": false,
+        "discordDesktopOnly": false
+    }
+] }

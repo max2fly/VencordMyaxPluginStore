@@ -1,0 +1,146 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/* Reuses the base plugin grid (.vc-plugins-grid) and addon card shell
+   (.vc-addon-card, .vc-addon-header, .vc-addon-note, …) from the built-in
+   Plugins tab; these are the store-specific additions. */
+
+.vc-myax-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* The base .vc-addon-header has `margin-top: auto` (it sits at the BOTTOM in Vencord's
+   native card). We put the header first, so that auto-margin would push our content
+   down and dump the row-stretch slack as a void between elements (and above the header).
+   Neutralise it: with NO auto-margins anywhere, the flex column packs tight at the top
+   (header → description → tags → buttons, 8px apart) and any row-equalization slack
+   collects at the very bottom, below the buttons — not between the text and the buttons. */
+.vc-myax-card .vc-addon-header {
+    margin-top: 0;
+    /* Base header is `margin-bottom: 0.5em` (~8px), which stacked on the card's 8px
+       flex gap to leave ~16px below the "by Author" line. Net it to 6px: the 8px gap
+       plus this -2px = 6px between the author line and the description. */
+    margin-bottom: -2px;
+}
+
+
+.vc-myax-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vc-myax-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.vc-myax-search {
+    height: 40px;
+}
+
+.vc-myax-autoupdate {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.vc-myax-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 16px;
+}
+
+/* Buttons anchored to the card bottom so they line up across a grid row (the card
+   stretches to its row's height via align-items:stretch + .vc-addon-card{height:100%}).
+   margin-top:auto absorbs the row-equalization slack ABOVE the footer. With the header's
+   own margin-top:auto neutralised (above) and the tags row only rendered when a badge
+   exists (so no empty ~2-line reservation between the text and the buttons), the only
+   gap here is the genuine alignment slack on a card sharing a row with a taller one. */
+.vc-myax-footer {
+    display: flex;
+    margin-top: auto;
+    /* A little breathing room above the buttons that's always present (padding works
+       alongside margin-top:auto, which only absorbs row-stretch slack). */
+    padding-top: 6px;
+}
+
+.vc-myax-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vc-myax-badge {
+    padding: 0 6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    border-radius: 8px;
+    height: 16px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--white-500);
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Incompatible marker: red dot + red text on a subtle background, so the blip
+   stays readable (a red dot on the solid danger fill would be invisible). */
+.vc-myax-badge-incompat {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--background-modifier-active);
+    color: var(--status-danger);
+}
+
+.vc-myax-blip {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--status-danger);
+}
+
+/* Prominent top banner announcing a store self-update is available. */
+.vc-myax-store-banner {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: var(--info-help-background, var(--background-modifier-active));
+    border: 1px solid var(--brand-500);
+}
+
+.vc-myax-store-banner-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Allow up to 3 description lines instead of the base 2, but size to CONTENT so a
+   1-2 line description doesn't reserve 3 lines of blank space. The base .vc-addon-note
+   (src/components/settings/AddonCard.css) fixes height:36px / -webkit-line-clamp:2
+   (18px per line). We unset the fixed height (height:auto) and cap at 3 lines
+   (max-height:54px + clamp:3); the -webkit-box/overflow come from the base rule.
+   Cards in a grid row still equalize height via the grid's align-items:stretch +
+   .vc-addon-card{height:100%}, so a 1-line card next to a 3-line card grows to match
+   its neighbour, while a row of 1-line cards stays 1 line tall. Scoped to our card so
+   the native Plugins tab keeps its fixed 2-line layout. */
+.vc-myax-card .vc-addon-note {
+    height: auto;
+    max-height: 54px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+}
